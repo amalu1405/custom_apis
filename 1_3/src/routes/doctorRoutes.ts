@@ -124,7 +124,7 @@ router.get('/api/doctor/:doctorId',
         // Logic to get a doctor by ID
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ 'success': false, 'errors': errors.array() });
         }
 
         const doctorId = parseInt(req.params.doctorId);
@@ -194,7 +194,7 @@ router.get('/api/doctor/:doctorId/average-duration',
         // Logic to get a doctor by ID
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ 'success': false, errors: errors.array() });
         }
 
         const doctorId = parseInt(req.params.doctorId);
@@ -207,7 +207,7 @@ router.get('/api/doctor/:doctorId/average-duration',
             );
 
             if (result.rows.length === 0) {
-                return res.status(404).json({ message: 'Doctor not found' });
+                return res.status(404).json({ 'success': false, message: 'Doctor not found' });
             }
 
 
