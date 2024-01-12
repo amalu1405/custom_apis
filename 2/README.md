@@ -4,6 +4,19 @@
 
 Account/Ledger Apis
 
+### Configure Environment Variables
+Set up your `database parameters` according to your local database credentials. These files should contain the necessary configuration for your project.
+
+```plaintext
+# Example
+type: 'postgres', // replace with your database type
+host: 'localhost', // replace with your database host
+port: 5432,
+username: 'postgres', // replace with your database user
+password: 'root', // replace with your database password
+database: 'test', // replace with your database name
+```
+
 ## Installation
 
 To set up the project environment, run the following commands in the root directory of the project:
