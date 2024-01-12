@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+      "target": "ES2018",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "experimentalDecorators": true,
+      "strictPropertyInitialization": false,
+      "emitDecoratorMetadata": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist",
+      "rootDir": "./",
+      "baseUrl": "./",
+      "paths": {
+        "*": ["*", "*/index"]
+      }
+    },
+    "include": [
+      "handlers/**/*.ts",
+      "entities/**/*.ts",
+      "services/**/*.ts",
+      "unit_tests/**/*.ts",
+      "endpoints/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules",
+      "**/*.test.ts"
+    ]
+  }
+  
