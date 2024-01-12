@@ -201,16 +201,21 @@ router.get('/api/patient/:patientId/conversations',
 
 
         try {
-            const result = await pool.query(
+            const result1 = await pool.query(
                 'SELECT * FROM conversations WHERE patientId = $1',
                 [patientId]
             );
 
-            if (result.rows.length === 0) {
+            const result2 = await pool.query(
+                'SELECT * FROM conversationsv2 WHERE patientId = $1',
+                [patientId]
+            );
+
+            if (result1.rows.length === 0 && result2.rows.length === 0) {
                 return res.status(404).json({ 'success': false, message: 'Patient not found' });
             }
 
-            res.json({ 'success': true, conversations: result.rows });
+            res.json({ 'success': true, conversations: result1.rows.concat(result2.rows) });
         } catch (error: unknown) {
             if (error instanceof Error) {
                 res.status(500).json({ 'success': false, 'error': error.message });

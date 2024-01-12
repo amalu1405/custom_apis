@@ -135,4 +135,73 @@ router.get('/api/doctor/:doctorId', [
         }
     }
 });
+// average duration of a doctor
+/**
+ * @swagger
+ * /api/doctor/{doctorId}/average-duration:
+ *   get:
+ *     tags:
+ *      - Doctor
+ *     summary: Get average duration of a doctor by ID
+ *     description: Retrieve a specific doctor's average duration by their ID.
+ *     parameters:
+ *       - in: path
+ *         name: doctorId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the doctor to retrieve.
+ *     responses:
+ *       200:
+ *         description: Doctor retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 averageDuration:
+ *                   type: integer
+ *       400:
+ *         description: Invalid input.
+ *       404:
+ *         description: Doctor not found.
+ *       500:
+ *         description: Internal server error.
+ */
+router.get('/api/doctor/:doctorId/average-duration', [
+    (0, express_validator_1.param)('doctorId').isInt().withMessage('Doctor ID must be a number')
+], async (req, res) => {
+    // Logic to get a doctor by ID
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const doctorId = parseInt(req.params.doctorId);
+    try {
+        const result = await db_1.default.query('SELECT * FROM conversationsv2 WHERE doctorId = $1', [doctorId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'Doctor not found' });
+        }
+        res.json({ 'success': true, "averageDuration": calculateAverageDuration(result.rows) });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            res.status(500).json({ 'success': false, 'error': error.message });
+        }
+        else {
+            res.status(500).json({ 'success': false, 'error': 'An unknown error occurred' });
+        }
+    }
+});
+const calculateAverageDuration = (rows) => {
+    const totalDurationMs = rows.reduce((total, conversation) => {
+        const startTime = new Date(conversation.starttime).getTime();
+        const endTime = new Date(conversation.endtime).getTime();
+        const durationMs = endTime - startTime;
+        return total + durationMs;
+    }, 0);
+    return totalDurationMs / 1000 / rows.length;
+};
 exports.default = router;

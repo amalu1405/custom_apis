@@ -65,7 +65,7 @@ router.post('/api/v2/conversations',
         }
 
         // Logic to create a conversation
-        const { patientId, doctorId, message, startTime, endTime } = req.body;
+        const { patientId, doctorId, notes, startTime, endTime } = req.body;
 
         // Check if patient and doctor exist
         const patientExistsResult = await patientExists(patientId);
@@ -78,8 +78,8 @@ router.post('/api/v2/conversations',
         // Create a new conversation
         try {
             const result = await pool.query(
-                'INSERT INTO conversations (patientId, doctorId, message) VALUES ($1, $2, $3) RETURNING *',
-                [patientId, doctorId, message]
+                'INSERT INTO conversationsv2 (patientId, doctorId, notes, startTime, endTime) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                [patientId, doctorId, notes, startTime, endTime]
             );
             res.status(201).json({ 'success': true, 'conversationId': result.rows[0].conversationid });
         } catch (error: unknown) {

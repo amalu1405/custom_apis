@@ -180,11 +180,12 @@ router.get('/api/patient/:patientId/conversations', [
     }
     const patientId = parseInt(req.params.patientId);
     try {
-        const result = await db_1.default.query('SELECT * FROM conversations WHERE patientId = $1', [patientId]);
-        if (result.rows.length === 0) {
+        const result1 = await db_1.default.query('SELECT * FROM conversations WHERE patientId = $1', [patientId]);
+        const result2 = await db_1.default.query('SELECT * FROM conversationsv2 WHERE patientId = $1', [patientId]);
+        if (result1.rows.length === 0 && result2.rows.length === 0) {
             return res.status(404).json({ 'success': false, message: 'Patient not found' });
         }
-        res.json({ 'success': true, conversations: result.rows });
+        res.json({ 'success': true, conversations: result1.rows.concat(result2.rows) });
     }
     catch (error) {
         if (error instanceof Error) {

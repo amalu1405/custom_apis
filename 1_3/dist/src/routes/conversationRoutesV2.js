@@ -24,7 +24,9 @@ const router = express_1.default.Router();
  *             required:
  *               - patientId
  *               - doctorId
- *               - message
+ *               - startTime
+ *               - endTime
+ *               - notes
  *             properties:
  *               patientId:
  *                 type: integer
@@ -32,9 +34,17 @@ const router = express_1.default.Router();
  *               doctorId:
  *                 type: integer
  *                 description: The doctor's ID.
- *               message:
+ *               notes:
  *                 type: string
  *                 description: The conversation message.
+ *               startTime:
+ *                 type: string
+ *                 format: date-time
+ *                 description: The conversation start time.
+ *               endTime:
+ *                 type: string
+ *                 format: date-time
+ *                 description: The conversation end time.
  *     responses:
  *       201:
  *         description: Conversation created successfully.
@@ -44,14 +54,16 @@ const router = express_1.default.Router();
 router.post('/api/v2/conversations', [
     (0, express_validator_1.body)('patientId').isInt().withMessage('Patient ID must be a number'),
     (0, express_validator_1.body)('doctorId').isInt().withMessage('Doctor ID must be a number'),
-    (0, express_validator_1.body)('message').notEmpty().withMessage('Message cannot be empty')
+    (0, express_validator_1.body)('notes').notEmpty().withMessage('Message cannot be empty'),
+    (0, express_validator_1.body)('startTime').notEmpty().withMessage('startTime cannot be empty'),
+    (0, express_validator_1.body)('endTime').notEmpty().withMessage('endTime cannot be empty'),
 ], async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ 'success': false, errors: errors.array() });
     }
     // Logic to create a conversation
-    const { patientId, doctorId, message } = req.body;
+    const { patientId, doctorId, notes, startTime, endTime } = req.body;
     // Check if patient and doctor exist
     const patientExistsResult = await patientExists(patientId);
     const doctorExistsResult = await doctorExists(doctorId);
@@ -60,7 +72,7 @@ router.post('/api/v2/conversations', [
     }
     // Create a new conversation
     try {
-        const result = await db_1.default.query('INSERT INTO conversations (patientId, doctorId, message) VALUES ($1, $2, $3) RETURNING *', [patientId, doctorId, message]);
+        const result = await db_1.default.query('INSERT INTO conversationsv2 (patientId, doctorId, notes, startTime, endTime) VALUES ($1, $2, $3, $4, $5) RETURNING *', [patientId, doctorId, notes, startTime, endTime]);
         res.status(201).json({ 'success': true, 'conversationId': result.rows[0].conversationid });
     }
     catch (error) {

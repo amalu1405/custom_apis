@@ -12,6 +12,7 @@ const patientRoutes_1 = __importDefault(require("./routes/patientRoutes"));
 const doctorRoutes_1 = __importDefault(require("./routes/doctorRoutes"));
 const init_db_1 = require("./init-db");
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+const conversationRoutesV2_1 = __importDefault(require("./routes/conversationRoutesV2"));
 (0, init_db_1.createTables)().catch(console.error);
 // Swagger definition
 const swaggerDefinition = {
@@ -36,6 +37,7 @@ const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
 exports.app.use(conversationRoutes_1.default);
+exports.app.use(conversationRoutesV2_1.default);
 exports.app.use(patientRoutes_1.default);
 exports.app.use(doctorRoutes_1.default);
 exports.app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));

@@ -9,6 +9,7 @@ import doctorRoutes from './routes/doctorRoutes';
 import { createTables } from './init-db';
 
 import swaggerJSDoc from 'swagger-jsdoc';
+import conversationRoutesV2 from './routes/conversationRoutesV2';
 
 createTables().catch(console.error);
 
@@ -39,6 +40,7 @@ export const app = express();
 
 app.use(express.json());
 app.use(conversationRoutes);
+app.use(conversationRoutesV2);
 app.use(patientRoutes);
 app.use(doctorRoutes);
 

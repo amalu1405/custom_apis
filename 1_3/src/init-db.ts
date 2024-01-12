@@ -34,7 +34,7 @@ export const createTables = async () => {
 
         const createConversationsTableV2 = `
             CREATE TABLE IF NOT EXISTS conversationsv2 (
-                conversationId SERIAL PRIMARY KEY,
+                conversationv2Id SERIAL PRIMARY KEY,
                 patientId INT,
                 doctorId INT,
                 startTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
